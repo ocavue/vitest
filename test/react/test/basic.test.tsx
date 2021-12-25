@@ -1,31 +1,17 @@
+import { ThemeProvider } from '@mui/system'
+import { render, screen, waitFor } from '@testing-library/react'
 import React from 'react'
-import renderer from 'react-test-renderer'
-import Link from '../components/Link'
+// import { test } from "vitest"
 
-function toJson(component: renderer.ReactTestRenderer) {
-  const result = component.toJSON()
-  expect(result).toBeDefined()
-  expect(result).not.toBeInstanceOf(Array)
-  return result as renderer.ReactTestRendererJSON
-}
+import { Homepage } from '../src/components/homepage'
+import { theme } from '../src/styles/theme'
 
-test('Link changes the class when hovered', () => {
-  const component = renderer.create(
-    <Link page="http://antfu.me">Anthony Fu</Link>,
+test('homepage', async() => {
+  render(
+    <ThemeProvider theme={theme}>
+      <Homepage hero={{ imageProps: {} }} />
+    </ThemeProvider>,
   )
-  let tree = toJson(component)
-  expect(tree).toMatchSnapshot()
 
-  // manually trigger the callback
-  tree.props.onMouseEnter()
-
-  // re-rendering
-  tree = toJson(component)
-  expect(tree).toMatchSnapshot()
-
-  // manually trigger the callback
-  tree.props.onMouseLeave()
-  // re-rendering
-  tree = toJson(component)
-  expect(tree).toMatchSnapshot()
+  await waitFor(() => screen.getByTestId('homepage_root'))
 })
